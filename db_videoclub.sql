@@ -153,7 +153,13 @@ values
 (1, 4, '2024-02-05', NULL),
 (2, 3, '2024-01-20', '2024-01-29'),
 (4, 2, '2024-01-12', '2024-01-15'),
+(4, 4, '2024-01-15', NULL),
 (3, 5, '2024-01-02', '2024-01-05'),
-(6, 1, '2024-01-09', '2024-01-24'),
+(3, 1, '2024-01-05', NULL),
+(6, 4, '2024-01-09', '2024-01-24'),
 (7, 7, '2024-02-02', NULL),
-(5, 6, '2024-02-04', NULL);
+(5, 6, '2024-02-04', NULL),
+(5, 7, '2024-02-04', NULL);
+
+-- Título y copias disponibles
+select m.movie_title, m.movie_copies - count(r.movie_id) filter (where r.rental_returned isnull) as disponible from movie m left join rental r on m.movie_id = r.movie_id group by m.movie_id, m.movie_title, m.movie_copies order by m.movie_id;

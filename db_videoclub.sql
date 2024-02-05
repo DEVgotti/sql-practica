@@ -77,8 +77,8 @@ foreign key (director_id) references director(director_id);
 alter table director add constraint unique_director_name
 unique (director_name);
 
-insert into genre (genre_name)
-values
+insert into genre (genre_name) 
+values 
 ('Acción'),
 ('Drama'),
 ('Suspense'),
@@ -163,3 +163,13 @@ values
 
 -- Título y copias disponibles
 select m.movie_title, m.movie_copies - count(r.movie_id) filter (where r.rental_returned isnull) as disponible from movie m left join rental r on m.movie_id = r.movie_id group by m.movie_id, m.movie_title, m.movie_copies order by m.movie_id;
+
+-- Numero de socio, nombre y Género favorito
+/* select customer_id as n_socio, c.customer_name, (select TOP 1 genre_id from genre_movie) as fav_genre from customer c
+ * left join movie m on c.customer_id = m.movie_id
+ * join genre_movie gm on m.movie_id = gm.movie_id
+ * join genre g on g.genre_id = gm.genre_id
+ * group by gm.genre_id, c.customer_id
+ * order by fav_genre DESC;
+ */
+

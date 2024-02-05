@@ -25,7 +25,7 @@ create table if not exists rental(
 	customer_id int not null,
 	movie_id int not null,
 	rental_rented date not null,
-	rental_returned date not null
+	rental_returned date
 );
 
 create table if not exists movie(

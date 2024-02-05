@@ -15,7 +15,9 @@ create table if not exists residence(
 	residence_id serial primary key,
 	residence_postcode int not null,
 	residence_street text not null,
-	residence_exntesion varchar(50) not null
+	residence_number int not null,
+	residence_floor int,
+	residence_extension varchar(50)
 );
 
 create table if not exists rental(
@@ -69,8 +71,8 @@ foreign key (genre_id) references genre(genre_id);
 alter table movie add constraint fk_director_movie
 foreign key (director_id) references director(director_id);
 
-insert into genre (genre_name)
-values
+insert into genre (genre_name) 
+values 
 ('Acción'),
 ('Drama'),
 ('Suspense'),
@@ -86,6 +88,10 @@ values
 ('George Marshall'),
 ('Sergio Leone');
 
+/*
+ * Desconozco el mes/día de publicación de las películas así que utilizo el 1 de enero como relleno para respetar el formato fecha.
+ * Sería más lógico utilizar un 'int' con el año pero no se si utilizar el tipo 'date' aquí forma parte de la practica como tal.
+ */
 insert into movie (movie_title, movie_published, director_id, movie_synopsis, movie_copies)
 values
 ('Yojimbo', '1961-01-01', 1, 'asd', 1),
@@ -95,3 +101,19 @@ values
 ('The Unforgiven', '1960-01-01', 4, 'In post-Civil War Texas, the Zachary and Rawlins families are intrinsically tied together. Ben Zachary, the head of the family following the death of his father, Will Zachary, in Ben being the oldest son, and patriarch Zeb Rawlins are partners in a cattle ranching operation. Zeb''s unassuming son Charlie Rawlins would like to court Ben''s younger sister, adopted Rachel Zachary - something that doesn''t quite sit well with Ben in he believing Charlie not worthy of Rachel - while Zeb''s daughter Georgia Rawlins would be happy with any of the Zachary brothers, although she has her sights set on middle son Cash Zachary. Their world is upset with the arrival of an older man brandishing a saber. It is not the saber which is concerning, but rather the story that he is spreading: that Rachel is of Indian heritage, most specifically Kiowa. Regardless of the truth, which matriarch Mattilda Zachary knows, this story places a strain on the community who don''t want a "dirty Injun" in their midst, threatens all the relationships between the Zacharys and Rawlins, and causes a division within the Zachary family, as the Zacharys try to protect themselves and their property against those who don''t want Rachel there, including the Kiowa who want Rachel, one of their own, back.', 2),
 ('The Sheepman', '1958-01-01', 5, 'A stranger in a Western cattle-town behaves with remarkable self-assurance, establishing himself as a man to be reckoned with. The reason appears with his stock: a herd of sheep, which he intends to graze on the range. The horrified inhabitants decide to run him out at all costs.', 3),
 ('Per un pugno di dollari', '1964-01-01', 6, 'With nothing but profit on his mind, a taciturn American with a lightning-fast right hand rides into San Miguel, a sun-bleached border town where everyone is either rich or dead. As the amoral man with no name discovers that the sleepy town provides the perfect opportunity to make a quick buck, the mysterious stranger soon finds himself caught in the middle of a destructive, long-standing feud. After all, the corrupt Baxters and the murderous Rojos, two feuding families fighting for control, won''t let a nameless nobody get a slice of the cake. But the dusty, poncho-clad newcomer has already set his sights on the grand prize--the only way to get it is to play the gangs off against each other in a deadly battle of wits. Of course, no one has pulled such a reckless stunt and lived to tell the tale. How far is a man willing to go for a fistful of dollars?', 5);
+
+insert into residence (residence_postcode, residence_street, residence_number, residence_floor, residence_extension)
+values
+(47007, 'Francisco Pizarro', 6, 4, '3D'),
+(47007, 'Antonio Machado', 2, 3, '4A'),
+(47007, 'Concepción Arenal', 11, 2, NULL);
+
+insert into customer (customer_name, customer_surname, customer_birthday, customer_phone, customer_dni, residence_id)
+values
+('Ivan', 'Santana', '2005-02-15', 694804631, '1124603H', 1),
+('Rodrigo', 'Rojas', '2006-10-23', 607425989, '7402615L', NULL),
+('Carla', 'Lopez', '1992-06-26', 666238181, '6298662C', 2),
+('Eduardo', 'Rubio', '1990-10-12', 684839436, '2237186E', NULL),
+('Eva', 'Nuñez', '1998-03-09', 671280006, '6152776T', NULL),
+('Jaime', 'Caballero', '2015-03-22', 616805343, '7402615L', 3),
+('Adrian', 'Dominguez', '2010-11-03', 604696806, '3913881V', NULL);

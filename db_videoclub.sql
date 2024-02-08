@@ -158,7 +158,7 @@ values
 (5, 7, '2024-02-04', NULL);
 
 -- Título y copias disponibles
-select m.movie_title, m.movie_copies - count(r.movie_id) filter (where r.rental_returned isnull) as disponible from movie m left join rental r on m.movie_id = r.movie_id group by m.movie_id, m.movie_title, m.movie_copies order by m.movie_id;
+select m.movie_title as pelicula, m.movie_copies - count(r.movie_id) filter (where r.rental_returned is null) as disponible from movie m left join rental r on m.movie_id = r.movie_id group by m.movie_id, m.movie_title, m.movie_copies order by m.movie_id;
 
 -- Numero de socio, nombre y Género favorito
 select customer_id as n_socio, c.customer_name, (select count(genre_id) from genre_movie) as fav_genre from customer c 
@@ -167,3 +167,4 @@ join genre_movie gm on m.movie_id = gm.movie_id
 join genre g on g.genre_id = gm.genre_id
 group by gm.genre_id, c.customer_id
 order by fav_genre DESC;
+

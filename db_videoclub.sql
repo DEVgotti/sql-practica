@@ -160,6 +160,8 @@ values
 -- Título y copias disponibles
 select m.movie_title as pelicula, m.movie_copies - count(r.movie_id) filter (where r.rental_returned is null) as disponible from movie m left join rental r on m.movie_id = r.movie_id group by m.movie_id, m.movie_title, m.movie_copies order by m.movie_id;
 
+-- NO ESTA TERMINADA
+
 -- Numero de socio, nombre y Género favorito
 select customer_id as n_socio, c.customer_name, (select count(genre_id) from genre_movie) as fav_genre from customer c 
 left join movie m on c.customer_id = m.movie_id 

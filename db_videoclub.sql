@@ -23,7 +23,7 @@ create table if not exists residence(
 create table if not exists rental(
 	rental_id serial primary key,
 	customer_id int not null,
-	movie_id int not null,
+	copy_id int not null,
 	rental_rented date not null,
 	rental_returned date
 );
@@ -53,6 +53,11 @@ create table if not exists director(
 	director_name varchar(50) not null
 );
 
+create table if not exists copies(
+	copy_id serial primary key,
+	movie_id int not null
+);
+
 alter table customer add constraint fk_residence_customer
 foreign key (residence_id) references residence(residence_id);
 
@@ -60,7 +65,7 @@ alter table rental add constraint fk_customer_rental
 foreign key (customer_id) references customer(customer_id);
 
 alter table rental add constraint fk_movie_rental
-foreign key (movie_id) references movie(movie_id);
+foreign key (copy_id) references movie(movie_id);
 
 alter table genre_movie add constraint fk_genre_movie_movie
 foreign key (movie_id) references movie(movie_id);
@@ -76,6 +81,9 @@ foreign key (director_id) references director(director_id);
 
 alter table director add constraint unique_director_name
 unique (director_name);
+
+alter table copies add constraint fk_copy_movie
+foreign key (movie_id) references movie(movie_id);
 
 insert into genre (genre_name) 
 values 
@@ -127,6 +135,19 @@ values
 (7, 2), -- Per un pugno di dollari
 (7, 7); -- Per un pugno di dollari
 
+insert into copies (movie_id)
+values
+(1),
+(1),
+(1),
+(2),
+(3),
+(3),
+(4),
+(5),
+(6),
+(7);
+
 insert into residence (residence_postcode, residence_street, residence_number, residence_floor, residence_extension)
 values
 (47007, 'Francisco Pizarro', 6, 4, '3D'),
@@ -143,7 +164,7 @@ values
 ('Jaime', 'Caballero', '2015-03-22', 616805343, '7402615L', 3),
 ('Adrian', 'Dominguez', '2010-11-03', 604696806, '3913881V', NULL);
 
-insert into rental (customer_id, movie_id, rental_rented, rental_returned)
+insert into rental (customer_id, copy_id, rental_rented, rental_returned)
 values
 (1, 1, '2024-02-01', '2024-02-05'),
 (1, 4, '2024-02-05', NULL),
@@ -153,20 +174,21 @@ values
 (3, 5, '2024-01-02', '2024-01-05'),
 (3, 1, '2024-01-05', NULL),
 (6, 4, '2024-01-09', '2024-01-24'),
+(7, 4, '2024-01-09', '2024-01-24'),
 (7, 7, '2024-02-02', NULL),
 (5, 6, '2024-02-04', NULL),
 (5, 7, '2024-02-04', NULL);
 
 -- Título y copias disponibles
-select m.movie_title as pelicula, m.movie_copies - count(r.movie_id) filter (where r.rental_returned is null) as disponible from movie m left join rental r on m.movie_id = r.movie_id group by m.movie_id, m.movie_title, m.movie_copies order by m.movie_id;
+-- ANTIGUOS
+-- select m.movie_title as pelicula, m.movie_copies - count(r.movie_id) filter (where r.rental_returned is null) as disponible from movie m left join rental r on m.movie_id = r.movie_id group by m.movie_id, m.movie_title, m.movie_copies order by m.movie_id;
 
--- NO ESTA TERMINADA
+ --select m.movie_title, c.customer_name, r.rental_rented from movie m left join rental r on r.movie_id = m.movie_id left join customer c on c.customer_id = r.customer_id where r.rental_returned is not null 
 
--- Numero de socio, nombre y Género favorito
-select customer_id as n_socio, c.customer_name, (select count(genre_id) from genre_movie) as fav_genre from customer c 
-left join movie m on c.customer_id = m.movie_id 
-join genre_movie gm on m.movie_id = gm.movie_id
-join genre g on g.genre_id = gm.genre_id
-group by gm.genre_id, c.customer_id
-order by fav_genre DESC;
+-- NUEVOS
+select m.movie_title, count(c.copy_id) copias from movie m
+inner join copies c on m.movie_id = c.movie_id
+left join rental r on c.copy_id = r.copy_id and r.rental_rented is not null and r.rental_returned is null
+where r.rental_id is null
+group by m.movie_title
 
